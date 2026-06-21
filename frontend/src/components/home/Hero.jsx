@@ -1,6 +1,7 @@
 import React from "react";
 import Container from "../common/Container";
 import { ArrowRight, Stars } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -29,14 +30,10 @@ const Hero = () => {
           </p>
 
           <div className="mt-10 flex items-center gap-4">
-            <button className="px-7 py-3 rounded-2xl bg-purple-600 text-white font-semibold shadow-lg hover:shadow-purple-400/50 hover:scale-105 transition-all duration-300 flex items-center gap-2">
-              Get Started
-              <ArrowRight size={18} />
-            </button>
-
-            <button className="px-7 py-3 rounded-2xl bg-white/70 backdrop-blur border border-gray-200 text-gray-700 font-semibold hover:bg-white hover:scale-105 transition-all duration-300">
+            <Link to="/quotes" className="px-7 py-3 rounded-2xl bg-purple-600 text-white font-semibold shadow-lg hover:shadow-purple-400/50 hover:scale-105 transition-all duration-300 flex items-center gap-2">
               View Quotes
-            </button>
+              <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </Container>
