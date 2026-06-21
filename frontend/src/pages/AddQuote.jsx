@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import Container from "../components/common/Container";
 import { User, Quote, Sparkles } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AddQuote = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     quote: "",
@@ -15,9 +19,43 @@ const AddQuote = () => {
     });
   };
 
+  const { mutate: addQuote, isPending } = useMutation({
+    mutationFn: async (formData) => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/quotes/post`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          },
+        );
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Something went wrong.");
+        }
+
+        return data;
+      } catch (error) {
+        console.log(error.message);
+        throw error;
+      }
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Quote Added Successfully.");
+      navigate("/quotes");
+    },
+    onError: (data) => {
+      toast.error(data.message || "Something went wrong.");
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    addQuote(formData);
     setFormData({ fullName: "", quote: "" });
   };
 
@@ -75,7 +113,7 @@ const AddQuote = () => {
               className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 text-white font-semibold shadow-md hover:shadow-purple-400/50 hover:scale-[1.02] active:scale-95 transition-all duration-300"
             >
               <Sparkles size={18} />
-              Publish Quote
+              {isPending ? "Publishing..." : "Publish Quote"}
             </button>
           </form>
         </div>
