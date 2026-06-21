@@ -1,22 +1,34 @@
 import React from "react";
 import Container from "../common/Container";
 import { User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import QuoteSkeleton from "../common/QuoteSkeleton";
 
 const FeaturedQuotes = () => {
-  const quotes = [
-    {
-      quote: "The best way to get started is to quit talking and begin doing.",
-      fullName: "Walt Disney",
+  const { data: quotes, isLoading } = useQuery({
+    queryKey: ["quotes"],
+    queryFn: async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/quotes/get-all-quotes`,
+          {
+            method: "GET",
+          },
+        );
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Something went wrong.");
+        }
+        return data;
+      } catch (error) {
+        console.log(error.message);
+        throw error;
+      }
     },
-    {
-      quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-      fullName: "Winston Churchill",
-    },
-    {
-      quote: "Don’t watch the clock; do what it does. Keep going.",
-      fullName: "Sam Levenson",
-    },
-  ];
+  });
+
+  const featuredQuotes = quotes?.quotes?.slice(0,3);
 
   return (
     <div className="py-24 bg-linear-to-b from-white via-purple-50 to-white">
@@ -30,8 +42,8 @@ const FeaturedQuotes = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {quotes.map((q, i) => (
+        { isLoading ? <QuoteSkeleton /> :<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredQuotes?.map((q, i) => (
             <div
               key={i}
               className="group relative p-6 rounded-3xl bg-white/60 backdrop-blur-xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
@@ -51,7 +63,7 @@ const FeaturedQuotes = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> }
       </Container>
     </div>
   );

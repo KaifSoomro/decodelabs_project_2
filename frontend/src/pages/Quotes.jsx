@@ -2,36 +2,36 @@ import React, { useState } from "react";
 import Container from "../components/common/Container";
 import { Plus, Search, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import QuoteSkeleton from "../components/common/QuoteSkeleton";
 
 const Quotes = () => {
   const [search, setSearch] = useState("");
 
-  const quotes = [
-    {
-      fullName: "Walt Disney",
-      quote: "The best way to get started is to quit talking and begin doing.",
-    },
-    {
-      fullName: "Winston Churchill",
-      quote:
-        "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-    },
-    {
-      fullName: "Sam Levenson",
-      quote: "Don’t watch the clock; do what it does. Keep going.",
-    },
-    {
-      fullName: "Vincent Van Gogh",
-      quote:
-        "Great things are done by a series of small things brought together.",
-    },
-    {
-      fullName: "Unknown",
-      quote: "Push yourself, because no one else is going to do it for you.",
-    },
-  ];
+  const { data: quotes, isLoading } = useQuery({
+    queryKey: ["quotes"],
+    queryFn: async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/quotes/get-all-quotes`,
+          {
+            method: "GET",
+          },
+        );
 
-  const filteredQuotes = quotes.filter(
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Something went wrong.");
+        }
+        return data;
+      } catch (error) {
+        console.log(error.message);
+        throw error;
+      }
+    },
+  });
+
+  const filteredQuotes = quotes?.quotes?.filter(
     (q) =>
       q.quote.toLowerCase().includes(search.toLowerCase()) ||
       q.fullName.toLowerCase().includes(search.toLowerCase()),
@@ -56,7 +56,10 @@ const Quotes = () => {
             />
           </div>
 
-          <Link to="/add" className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 text-white font-medium shadow-md hover:shadow-purple-400/50 hover:scale-105 active:scale-95 transition-all duration-300">
+          <Link
+            to="/add"
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 text-white font-medium shadow-md hover:shadow-purple-400/50 hover:scale-105 active:scale-95 transition-all duration-300"
+          >
             <Plus size={18} />
             Add Quote
           </Link>
@@ -71,30 +74,36 @@ const Quotes = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredQuotes.map((q, i) => (
-            <div
-              key={i}
-              className="group relative p-6 rounded-3xl bg-white/60 backdrop-blur-xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
-            >
-              <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition"></div>
+        {isLoading ? (
+          <QuoteSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredQuotes?.map((q, i) => (
+              <div
+                key={i}
+                className="group relative p-6 rounded-3xl bg-white/60 backdrop-blur-xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+              >
+                <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition"></div>
 
-              <p className="text-gray-800 text-lg font-medium leading-relaxed">
-                “{q.quote}”
-              </p>
+                <p className="text-gray-800 text-lg font-medium leading-relaxed">
+                  “{q.quote}”
+                </p>
 
-              <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
-                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                  <User size={14} className="text-purple-600" />
+                <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
+                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <User size={14} className="text-purple-600" />
+                  </div>
+
+                  <span className="font-medium text-gray-700">
+                    {q.fullName}
+                  </span>
                 </div>
-
-                <span className="font-medium text-gray-700">{q.fullName}</span>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        {filteredQuotes.length === 0 && (
+        {filteredQuotes?.length === 0 && (
           <div className="text-center mt-20 text-gray-500">
             No quotes found for {search}.
           </div>
