@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import NavBar from "./components/common/NavBar";
 import Quotes from "./pages/Quotes";
 import Footer from "./components/common/Footer";
+import AddQuote from "./pages/AddQuote";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quotes" element={<Quotes />} />
+        <Route path="/add" element={<AddQuote />} />
       </Routes>
       <Footer />
     </>

@@ -1,19 +1,20 @@
 import React from "react";
 import Container from "../common/Container";
+import { User } from "lucide-react";
 
 const FeaturedQuotes = () => {
   const quotes = [
     {
-      text: "The best way to get started is to quit talking and begin doing.",
-      author: "Walt Disney",
+      quote: "The best way to get started is to quit talking and begin doing.",
+      fullName: "Walt Disney",
     },
     {
-      text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-      author: "Winston Churchill",
+      quote: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+      fullName: "Winston Churchill",
     },
     {
-      text: "Don’t watch the clock; do what it does. Keep going.",
-      author: "Sam Levenson",
+      quote: "Don’t watch the clock; do what it does. Keep going.",
+      fullName: "Sam Levenson",
     },
   ];
 
@@ -33,15 +34,21 @@ const FeaturedQuotes = () => {
           {quotes.map((q, i) => (
             <div
               key={i}
-              className="group relative p-6 rounded-3xl bg-white/70 backdrop-blur border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+              className="group relative p-6 rounded-3xl bg-white/60 backdrop-blur-xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
             >
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition"></div>
 
-              <p className="text-gray-800 text-lg leading-relaxed font-medium">
-                “{q.text}”
+              <p className="text-gray-800 text-lg font-medium leading-relaxed">
+                “{q.quote}”
               </p>
 
-              <p className="mt-5 text-sm text-gray-500">— {q.author}</p>
+              <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
+                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                  <User size={14} className="text-purple-600" />
+                </div>
+
+                <span className="font-medium text-gray-700">{q.fullName}</span>
+              </div>
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Container from "../components/common/Container";
 import { Plus, Search, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Quotes = () => {
   const [search, setSearch] = useState("");
@@ -55,10 +56,10 @@ const Quotes = () => {
             />
           </div>
 
-          <button className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 text-white font-medium shadow-md hover:shadow-purple-400/50 hover:scale-105 active:scale-95 transition-all duration-300">
+          <Link to="/add" className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-purple-600 text-white font-medium shadow-md hover:shadow-purple-400/50 hover:scale-105 active:scale-95 transition-all duration-300">
             <Plus size={18} />
             Add Quote
-          </button>
+          </Link>
         </div>
 
         <div className="mb-12">
