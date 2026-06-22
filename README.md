@@ -1,4 +1,4 @@
-# ✨ Aura Quotes
+# ✨ Quote App
 
 A modern full-stack MERN application where users can discover, search, and share inspirational quotes through a beautiful SaaS-inspired interface.
 
